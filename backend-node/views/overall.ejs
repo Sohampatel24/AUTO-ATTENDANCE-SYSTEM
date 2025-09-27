@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/overall-attendance.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="page-header text-center">
+            <div class="container">
+                <h1><i class="fas fa-calendar-check me-2"></i>Attendance Dashboard</h1>
+                <p class="lead">Track and analyze student attendance patterns</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card summary-card">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                            <div class="summary-value">
+                                <%= studentStats.length %>
+                            </div>
+                            <div class="summary-label">Total Students</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card summary-card">
+                        <div class="card-body">
+                            <i class="fas fa-book fa-2x text-info mb-2"></i>
+                            <div class="summary-value">
+                                <%= subjects.length %>
+                            </div>
+                            <div class="summary-label">Subjects</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card summary-card">
+                        <div class="card-body">
+                            <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                            <div class="summary-value" id="avg-attendance">
+                                <% let totalAttendance=0; let totalPossible=0; subjects.forEach(s=> {
+                                    studentStats.forEach(row => {
+                                    totalAttendance += row.subjWise[s];
+                                    totalPossible += totalLectures[s] || 0;
+                                    });
+                                    });
+                                    const avgPercentage = totalPossible ? Math.round((totalAttendance / totalPossible) *
+                                    100) : 0;
+                                    %>
+                                    <%= avgPercentage %>%
+                            </div>
+                            <div class="summary-label">Average Attendance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject-wise Attendance Chart -->
+            <div class="card">
+                <div class="card-header overall-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-chart-bar me-2"></i>Overall Attendance</span>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="subjectBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student-wise Attendance Table -->
+            <div class="card">
+                <div class="card-header student-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-table me-2"></i>Student-wise Attendance</span>
+                    <button class="btn btn-sm btn-success" onclick="downloadExcel()">
+                        <i class="fas fa-file-excel me-1"></i> Download Excel
+                    </button>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="attendance-table" id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <% subjects.forEach(s=> { %>
+                                        <th>
+                                            <%= s %>
+                                        </th>
+                                        <% }) %>
+                                            <th>Overall</th>
+                                            <th>Status</th> <!-- ✅ New column -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% studentStats.forEach(row=> {
+                                    let totalAttended = 0;
+                                    let totalPossible = 0;
+                                    subjects.forEach(s => {
+                                    totalAttended += row.subjWise[s];
+                                    totalPossible += totalLectures[s] || 0;
+                                    });
+                                    const overallPercentage = totalPossible ? Math.round((totalAttended / totalPossible)
+                                    * 100) : 0;
+
+                                    // Determine status
+                                    let statusText = '';
+                                    let statusClass = '';
+                                    if (overallPercentage >= 70) {
+                                    statusText = 'Good';
+                                    statusClass = 'status-good';
+                                    } else if (overallPercentage >= 50) {
+                                    statusText = 'Average';
+                                    statusClass = 'status-average';
+                                    } else {
+                                    statusText = 'Poor';
+                                    statusClass = 'status-poor';
+                                    }
+                                    %>
+                                    <tr>
+                                        <td class="student-name">
+                                            <%= row.student.name %>
+                                        </td>
+                                        <% subjects.forEach(s=> { %>
+                                            <td class="attendance-cell">
+                                                <%= row.subjWise[s] %>/<%= totalLectures[s] || 0 %>
+                                            </td>
+                                            <% }) %>
+                                                <!-- Bold Overall Column -->
+                                                <td class="attendance-cell fw-bold">
+                                                    <%= overallPercentage %>%
+                                                </td>
+                                                <!-- Centered Status Column -->
+                                                <td class="status-cell">
+                                                    <span class="status-badge <%= statusClass %>">
+                                                        <%= statusText %>
+                                                    </span>
+                                                </td>
+                                    </tr>
+
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // EJS variables passed from server
+        const subjects = <%- JSON.stringify(subjects) %>;
+        const studentStats = <%- JSON.stringify(studentStats) %>;
+        const totalLectures = <%- JSON.stringify(totalLectures) %>;
+
+        // ✅ Function to download table as Excel
+        function downloadExcel() {
+            const table = document.getElementById("attendanceTable");
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Attendance", raw: true });
+
+            // Ensure Excel does not misinterpret numbers as dates
+            const ws = wb.Sheets["Attendance"];
+            Object.keys(ws).forEach(key => {
+                if (key[0] === '!') return;
+                const cell = ws[key];
+                if (typeof cell.v === "number") {
+                    cell.t = "n";
+                } else {
+                    cell.t = "s";
+                }
+            });
+
+            XLSX.writeFile(wb, "Student_Attendance.xlsx");
+        }
+
+        // Calculate percentage attendance per subject
+        const attendedPercent = subjects.map(s => {
+            const total = studentStats.length * (totalLectures[s] || 1);
+            const attended = studentStats.reduce((sum, row) => sum + row.subjWise[s], 0);
+            return total ? (attended / total) * 100 : 0;
+        });
+
+        const missedPercent = attendedPercent.map(p => 100 - p);
+
+        // Initialize the chart
+        const ctxBar = document.getElementById("subjectBarChart").getContext("2d");
+        new Chart(ctxBar, {
+            type: "bar",
+            data: {
+                labels: subjects,
+                datasets: [
+    {
+        label: "Attended (%)",
+        data: attendedPercent,
+        backgroundColor: "#26C6DA",   // cyan
+        borderColor: "#0097A7",       // darker cyan
+        borderWidth: 1
+    },
+    {
+        label: "Missed (%)",
+        data: missedPercent,
+        backgroundColor: "#FF6F61",   // coral
+        borderColor: "#E64A19",       // darker coral
+        borderWidth: 1
+    }
+]
+
+
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.raw.toFixed(1)}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: value => value + "%"
+                        },
+                        title: {
+                            display: true,
+                            text: 'Attendance Percentage',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Subjects',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

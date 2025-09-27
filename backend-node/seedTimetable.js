@@ -12,6 +12,8 @@ const data = [
   { day: "Wednesday", lectures: ["CNS", "DBMS", "OS", "SE"] },
   { day: "Thursday", lectures: ["OS", "SE", "CNS", "DBMS"] },
   { day: "Friday", lectures: ["SE", "DBMS", "CNS", "OS"] },
+  { day: "Saturday", lectures: ["DBMS", "SE", "OS", "CNS"] },
+  { day: "Sunday", lectures: ["OS", "CNS", "DBMS", "SE"] },
 ];
 
 async function seed() {

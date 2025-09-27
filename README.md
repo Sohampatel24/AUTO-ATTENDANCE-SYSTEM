@@ -9,11 +9,17 @@ Open 3 seperate cmd
 
 pip install -r requirements.txt
   
-1) cd backend-node
-2) 1st cmd run - "npm init -y"
-3) 1st cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
-4) 1st cmd run - "npm install express-ejs-layouts"
-5) 1st cmd run - "node server.js"
+cd backend-node
+
+1st cmd run - "npm init -y"
+
+1st cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
+
+1st cmd run - "npm install express-ejs-layouts"
+
+1st cmd run - "npm install bcrypt"
+
+1st cmd run - "npm install express-session"
 6) 2nd cmd - cd ml-service-python
                activate virtual environment
                .venv\Scripts\activate

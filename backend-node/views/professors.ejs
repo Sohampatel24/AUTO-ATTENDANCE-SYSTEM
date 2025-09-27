@@ -1,0 +1,46 @@
+<h2 class="mb-3">Registered Professors</h2>
+
+<div class="card">
+  <div class="card-body">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (professors.length === 0) { %>
+          <tr>
+            <td colspan="4" class="text-center">No professors registered yet.</td>
+          </tr>
+        <% } else { %>
+          <% professors.forEach(professor => { %>
+          <tr>
+            <td><%= professor.name %></td>
+            <td><%= professor.email %></td>
+            <td><%= professor.subject %></td>
+            <td>
+              <form
+                action="/professors/<%= professor._id %>/delete"
+                method="POST"
+                style="display:inline;"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-danger btn-sm"
+                  onclick="return confirm('Are you sure you want to delete this professor?');"
+                >
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

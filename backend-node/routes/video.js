@@ -26,15 +26,11 @@ function getTodayInfo() {
  */
 router.get("/status-today", async (req, res) => {
   try {
-    const today = new Date();
-    const dateKey = today.toISOString().split("T")[0]; // YYYY-MM-DD
-    const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
+    const { dateKey, weekday } = getTodayInfo();
 
-    // 1. timetable se aaj ke subjects lao
     const todaySchedule = await Timetable.findOne({ day: weekday });
     const subjectsToday = todaySchedule ? todaySchedule.lectures : [];
 
-    // 2. attendance check karo
     const records = await Attendance.find({ date: dateKey }).lean();
 
     const progress = subjectsToday.map((subj, idx) => {
@@ -44,7 +40,7 @@ router.get("/status-today", async (req, res) => {
       return {
         lectureNumber: idx + 1,
         subject: subj,
-        status: done ? "✅ Recorded" : "❌ Pending",
+        status: done ? " Recorded" : " Pending",
       };
     });
 
@@ -80,9 +76,9 @@ router.post("/upload", upload.single("video"), async (req, res) => {
     uploadedPath = req.file.path;
 
     const lectureNumber = parseInt(req.body.lectureNumber, 10);
-    if (!lectureNumber || lectureNumber < 1 || lectureNumber > 4) {
+    if (!lectureNumber || lectureNumber < 1 || lectureNumber > 7) {
       if (uploadedPath && fs.existsSync(uploadedPath)) fs.unlinkSync(uploadedPath);
-      return res.status(400).send("Please select a valid lecture number (1-4)");
+      return res.status(400).send("Please select a valid lecture number (1–7)");
     }
 
     const { dateKey, weekday } = getTodayInfo();
@@ -90,22 +86,13 @@ router.post("/upload", upload.single("video"), async (req, res) => {
     const subjectsToday = todaySchedule ? todaySchedule.lectures : [];
     const subject = subjectsToday[lectureNumber - 1] || "Unknown";
 
-    const already = await Attendance.findOne({ date: dateKey, lectureNumber, subject });
-    if (already) {
-      if (uploadedPath && fs.existsSync(uploadedPath)) fs.unlinkSync(uploadedPath);
-      return res.render("upload", {
-        subjectsToday,
-        error: "⚠️ Attendance for this lecture is already recorded today.",
-        allDone: false
-      });
-    }
-
+    // send to Python backend
     const form = new FormData();
     form.append("file", fs.createReadStream(uploadedPath), { filename: req.file.originalname });
     form.append("sample_fps", req.body.sample_fps || "1.0");
     form.append("min_confidence_frames", req.body.min_frames || "1");
 
-    const pyRes = await axios.post("http://localhost:5002/video_recognize", form, {
+    const pyRes = await axios.post("http://localhost:5000/video_recognize", form, {
       headers: form.getHeaders(),
       maxContentLength: Infinity, maxBodyLength: Infinity, timeout: 120000
     });
@@ -114,12 +101,21 @@ router.post("/upload", upload.single("video"), async (req, res) => {
 
     if (result && result.summary && result.summary.length > 0) {
       for (const s of result.summary) {
-        await Attendance.create({
-          studentId: s.user,
-          subject,
+        // per-student duplicate check
+        const already = await Attendance.findOne({
+          date: dateKey,
           lectureNumber,
-          date: dateKey
+          subject,
+          studentId: s.user
         });
+        if (!already) {
+          await Attendance.create({
+            studentId: s.user,
+            subject,
+            lectureNumber,
+            date: dateKey
+          });
+        }
       }
     }
 
@@ -145,20 +141,103 @@ router.get("/analysis/today", async (req, res) => {
     const attendanceRecords = await Attendance.find({ date: dateKey }).lean();
 
     const stats = students.map(stu => {
-      const attended = attendanceRecords.filter(r => r.studentId === stu.name || r.studentId === stu.rollno);
+      // Flexible matching
+      const attended = attendanceRecords.filter(r => {
+        return r.studentId === stu.name ||
+               r.studentId === stu.rollno ||
+               (r.studentId && r.studentId.toLowerCase() === stu.name.toLowerCase()) ||
+               (r.studentId && r.studentId.toLowerCase().includes(stu.name.toLowerCase())) ||
+               (stu.name && stu.name.toLowerCase().includes(r.studentId?.toLowerCase()));
+      });
       const attendedLectures = attended.map(a => ({ lectureNumber: a.lectureNumber, subject: a.subject }));
       const percentage = totalLectures > 0 ? Math.round((attendedLectures.length / totalLectures) * 100) : 0;
       return { student: stu, attendedLectures, percentage };
     });
 
     const high = stats.filter(s => s.percentage >= 90);
+    const mediumHigh = stats.filter(s => s.percentage >= 75 && s.percentage < 90);
+    const mediumLow = stats.filter(s => s.percentage >= 51 && s.percentage < 75);
     const low = stats.filter(s => s.percentage < 50);
 
-    res.render("analysis", { dateKey, subjectsToday, stats, high, low });
+    res.render("analysis", { dateKey, subjectsToday, stats, high, mediumHigh, mediumLow, low });
 
   } catch (err) {
     console.error("Analysis error:", err);
     res.status(500).send("Error loading analysis");
+  }
+});
+
+
+/** GET /analysis/overall */
+router.get("/analysis/overall", async (req, res) => {
+  try {
+    const students = await Student.find().lean();
+    const records = await Attendance.find().lean();
+
+    const subjectStats = {};
+    for (const rec of records) {
+      if (!rec.subject) continue;
+      subjectStats[rec.subject] = (subjectStats[rec.subject] || 0) + 1;
+    }
+
+    const allSubjects = [...new Set(records.map(r => r.subject).filter(Boolean))];
+
+    const studentStats = students.map(stu => {
+      const recs = records.filter(r =>
+        r.studentId === stu.name ||
+        r.studentId === stu.rollno ||
+        (r.studentId && r.studentId.toLowerCase() === stu.name.toLowerCase()) ||
+        (r.studentId && r.studentId.toLowerCase().includes(stu.name.toLowerCase())) ||
+        (stu.name && stu.name.toLowerCase().includes(r.studentId?.toLowerCase()))
+      );
+      const subjWise = {};
+      for (const subj of allSubjects) {
+        subjWise[subj] = recs.filter(r => r.subject === subj).length;
+      }
+      return { student: stu, subjWise };
+    });
+
+    // count unique lectures per subject
+    const subjectTotals = {};
+    for (const rec of records) {
+      if (!rec.subject) continue;
+      const key = rec.subject + "_" + rec.date + "_" + rec.lectureNumber;
+      if (!subjectTotals[rec.subject]) subjectTotals[rec.subject] = new Set();
+      subjectTotals[rec.subject].add(key);
+    }
+
+    const totalLectures = {};
+    for (const subj in subjectTotals) {
+      totalLectures[subj] = subjectTotals[subj].size;
+    }
+
+    res.render("overall", {
+      subjectStats,
+      studentStats,
+      subjects: allSubjects,
+      totalLectures
+    });
+  } catch (err) {
+    console.error("Overall analysis error:", err);
+    res.status(500).send("Error loading overall analysis");
+  }
+});
+
+/** GET /debug/attendance - Debug route */
+router.get("/debug/attendance", async (req, res) => {
+  try {
+    const attendanceRecords = await Attendance.find().sort({ timestamp: -1 }).limit(50).lean();
+    const students = await Student.find().lean();
+
+    res.json({
+      attendance_count: attendanceRecords.length,
+      sample_attendance: attendanceRecords.slice(0, 10),
+      students_count: students.length,
+      sample_students: students.slice(0, 5).map(s => ({ name: s.name, rollno: s.rollno }))
+    });
+  } catch (err) {
+    console.error("Debug attendance error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 

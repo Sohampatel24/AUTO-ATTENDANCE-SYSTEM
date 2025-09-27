@@ -1,0 +1,113 @@
+/* Modern Upload Card */
+.upload-card {
+    border-radius: 20px;
+    background: linear-gradient(145deg, #ffffff, #f0f4f8); /* soft gradient background */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.upload-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    background: linear-gradient(145deg, #f7f9fc, #e8edf3); /* subtle hover shift */
+}
+
+.upload-card h5.card-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1f2a38;
+    margin-bottom: 1rem;
+}
+
+/* Card Subtitle */
+.upload-card .card-subtitle {
+    font-size: 0.95rem;
+    color: #6c7a89;
+    margin-bottom: 1.5rem;
+}
+
+/* Inputs */
+.upload-card .form-control, 
+.upload-card .form-select {
+    border-radius: 14px;
+    border: 1px solid #ced4da;
+    padding: 0.65rem 1rem;
+    transition: all 0.3s ease;
+    background: #f9fafc;
+}
+
+.upload-card .form-control:focus,
+.upload-card .form-select:focus {
+    border-color: #5dade2;
+    box-shadow: 0 0 10px rgba(93, 173, 226, 0.3);
+    outline: none;
+    background: #ffffff;
+}
+
+/* Input group icon styling */
+.upload-card .input-group-text {
+    background: #3498db;
+    color: white;
+    border-radius: 12px 0 0 12px;
+    border: none;
+}
+
+/* Buttons */
+.upload-card .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border: none;
+    border-radius: 14px;
+    padding: 0.65rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.upload-card .btn-primary:hover {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Alerts */
+.upload-card .alert {
+    border-radius: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Links as buttons */
+.upload-card .btn-info, 
+.upload-card .btn-success {
+    border-radius: 14px;
+    font-weight: 600;
+    padding: 0.65rem 1.8rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.upload-card .btn-info:hover {
+    background: linear-gradient(135deg, #5dade2, #2e86c1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.upload-card .btn-success:hover {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Progress Bar */
+.upload-card .progress {
+    height: 10px;
+    border-radius: 8px;
+    background-color: #e9ecef;
+}
+
+.upload-card .progress-bar {
+    background: linear-gradient(90deg, #3498db, #5dade2);
+    transition: width 0.4s ease;
+}

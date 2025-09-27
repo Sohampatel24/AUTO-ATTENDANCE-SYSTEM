@@ -1,0 +1,271 @@
+:root {
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --success: #4cc9f0;
+    --warning: #f72585;
+    --info: #4895ef;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding-bottom: 2rem;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: linear-gradient(120deg, var(--primary), var(--secondary));
+    color: white;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+}
+.student-header {
+    background: linear-gradient(135deg, #2980b9, #6dd5fa);
+    color: white;
+    font-weight: 600;
+}
+/* Excel download button custom style */
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;   /* darker green */
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4); /* soft glow */
+    transform: translateY(-2px); /* slight lift */
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Enhanced Table Styles */
+.attendance-table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    background-color: white;
+    border: 1px solid #dee2e6;
+}
+
+.attendance-table thead th {
+    background: linear-gradient(120deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+.attendance-table tbody td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+    border: 1px solid #dee2e6;
+    text-align: center;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.attendance-table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.08);
+}
+/* 🔹 Table Header - Cleaner Professional Look */
+.attendance-table thead th {
+    background: linear-gradient(135deg, #5A4FCF, #9B59B6); /* indigo → purple */
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+
+
+/* 🔹 Outer Border for the Table */
+.attendance-table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    background-color: white;
+    border: 2px solid #dee2e6; /* outer border */
+}
+
+/* 🔹 Row Styling */
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f9fbfd; /* subtle light gray */
+}
+
+.attendance-table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.1); /* soft blue hover */
+}
+.attendance-table thead th:first-child {
+    border-top-left-radius: var(--border-radius);
+}
+.attendance-table thead th:last-child {
+    border-top-right-radius: var(--border-radius);
+}
+
+
+.student-name {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.attendance-cell {
+    border-radius: 4px;
+}
+
+/* Status column badges */
+/* Status column base */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #fff;   /* white text for dark gradients */
+}
+
+/* Poor → Dark Red Gradient */
+.status-poor {
+    background: linear-gradient(135deg, #8e0e00, #e52d27);
+    border: 1px solid #a71d2a;
+}
+
+/* Average → Dark Yellow/Orange Gradient */
+.status-average {
+    background: linear-gradient(135deg, #b37300, #ffb347);
+    border: 1px solid #cc8b00;
+}
+
+/* Good → Dark Green Gradient */
+.status-good {
+    background: linear-gradient(135deg, #006400, #28a745);
+    border: 1px solid #1e7e34;
+}
+
+
+.status-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Summary cards */
+.summary-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.summary-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin: 1.5rem 0;
+}
+
+.page-header {
+    padding: 2rem 0;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.badge-attendance {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-high {
+    background-color: rgba(76, 201, 240, 0.15);
+    color: #1890c8;
+}
+
+.badge-medium {
+    background-color: rgba(247, 37, 133, 0.1);
+    color: #f72585;
+}
+
+.badge-low {
+    background-color: rgba(247, 37, 133, 0.2);
+    color: #f72585;
+}
+
+.filter-section {
+    background-color: white;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1.5rem;
+}
+.overall-header {
+    background: linear-gradient(135deg, #2c3e50, #3498db); /* dark → blue gradient */
+    color: white;
+    font-weight: 600;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .attendance-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+   
+    
+    .summary-value {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,348 @@
+/* ====== Scoped Container ====== */
+.analysis-container {
+  margin-top: 30px;
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+/* ====== Card Styling ====== */
+.analysis-container .card {
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.analysis-container .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.analysis-container .card:last-child {
+  margin-bottom: 50px;
+}
+
+.analysis-container .card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+/* Darker/bolder text for Lectures today and "No students" messages */
+.analysis-container p.text-muted strong,
+.analysis-container .text-muted:not(.badge) {
+  font-weight: 700 !important;
+  color: #2c3e50 !important; /* Dark gray instead of muted */
+  font-size: 1.05rem;
+}
+
+.analysis-container p.text-muted {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ====== Section Headings ====== */
+.analysis-container h5 {
+  font-weight: 800; /* Bolder font weight */
+  font-size: 1.1rem;
+  margin: 2rem 0 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Darkened colors for percentage ranges */
+.analysis-container .text-success {
+  background: #d4edda; /* Darker green background */
+  color: #155724 !important; /* Darker green text */
+  border-left: 5px solid #155724;
+}
+
+.analysis-container .text-primary {
+  background: #cce7ff; /* Darker blue background */
+  color: #004085 !important; /* Darker blue text */
+  border-left: 5px solid #004085;
+}
+
+.analysis-container .text-warning {
+  background: #fff3cd; /* Darker yellow background */
+  color: #856404 !important; /* Darker yellow text */
+  border-left: 5px solid #856404;
+}
+
+.analysis-container .text-danger {
+  background: #f8d7da; /* Darker red background */
+  color: #721c24 !important; /* Darker red text */
+  border-left: 5px solid #721c24;
+}
+
+/* ====== Student List Items ====== */
+.analysis-container ul {
+  list-style: none;
+  padding: 0;
+}
+
+.analysis-container ul li {
+  background: #f8f9fa;
+  border: 1px solid #ecf0f1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.analysis-container ul li:hover {
+  background: #f1f3f6;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.analysis-container ul li span.badge {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Darkened badge colors */
+.analysis-container ul li span.badge.green { 
+  background: #28a745; /* Darker green */
+  color: #fff; 
+}
+.analysis-container ul li span.badge.blue { 
+  background: #007bff; /* Darker blue */
+  color: #fff; 
+}
+.analysis-container ul li span.badge.orange { 
+  background: #fd7e14; /* Darker orange */
+  color: #fff; 
+}
+.analysis-container ul li span.badge.red { 
+  background: #dc3545; /* Darker red */
+  color: #fff; 
+}
+
+.analysis-container .text-muted {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-left: 5px;
+  color: #95a5a6 !important;
+}
+
+/* ====== Table Styling ====== */
+.analysis-container .table,
+.analysis-container .analysis-table {
+  margin-top: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 2px solid #1a2530; /* Outer border for the table */
+}
+
+.analysis-container .table:hover,
+.analysis-container .analysis-table:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Common Table Header Gradient - Darker colors */
+.analysis-container .table thead,
+.analysis-container .analysis-table thead {
+  background: linear-gradient(135deg, #1a2530, #1e4a6e); /* Darker gradient */
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Table header and cell borders */
+.analysis-container .table th,
+.analysis-container .table td,
+.analysis-container .analysis-table th,
+.analysis-container .analysis-table td {
+  text-align: center;
+  padding: 12px;
+  font-size: 0.95rem;
+  vertical-align: middle;
+  border: 1px solid #dee2e6; /* Inner cell borders */
+}
+
+/* Remove the default Bootstrap table borders and add custom ones */
+.analysis-container .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Outer border radius for table corners */
+.analysis-container .analysis-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Style the first and last cells in header for rounded corners */
+.analysis-container .analysis-table thead tr:first-child th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.analysis-container .analysis-table thead tr:first-child th:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Style the first and last cells in last row for rounded corners */
+.analysis-container .analysis-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.analysis-container .analysis-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+/* Remove color from percentage column numbers */
+.analysis-container .analysis-table td:nth-child(2) {
+  font-weight: bold;
+  color: #2c3e50 !important; /* Neutral dark color instead of blue */
+}
+
+/* Table stripes and hover */
+.analysis-container .table tbody tr:nth-child(even),
+.analysis-container .analysis-table tbody tr:nth-child(even) {
+  background: #f4f6f8;
+}
+
+.analysis-container .table tbody tr:hover,
+.analysis-container .analysis-table tbody tr:hover {
+  background: #e1e7ed;
+  transform: translateX(2px);
+  transition: all 0.2s ease;
+}
+
+/* Analysis table hover effect */
+.analysis-container .analysis-table tbody tr:hover {
+  background: #eaf2fb;
+  transform: scale(1.01);
+}
+
+/* Badges */
+.analysis-container .table .badge,
+.analysis-container .analysis-table .badge {
+  font-size: 0.75rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.analysis-container .table .badge.bg-primary,
+.analysis-container .analysis-table .badge.bg-primary {
+  background-color: #007bff !important; /* Darker blue */
+  color: #fff;
+}
+
+.analysis-container .table .badge.bg-primary:hover,
+.analysis-container .analysis-table .badge.bg-primary:hover {
+  background-color: #0056b3 !important; /* Even darker blue on hover */
+  transform: translateY(-1px);
+}
+
+/* Student name column */
+.analysis-container .analysis-table td:first-child strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Lecture badges */
+.analysis-container .analysis-table .badge {
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ====== Header Block - Darker colors ====== */
+.analysis-container .analysis-header {
+  background: linear-gradient(135deg, #1e4a6e, #155724); /* Dark blue to dark green */
+  color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.analysis-container .analysis-header h4 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.analysis-container .analysis-header p {
+  font-size: 1rem;
+  margin: 0;
+  color: #ecf0f1;
+}
+
+/* Dark header for Attendance Analysis title */
+.analysis-container .card-title.attendance-header {
+  background: linear-gradient(135deg, #4a148c, #0d47a1); /* Dark purple → Dark blue gradient */
+  color: #fff !important;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  font-size: 1.7rem;
+  font-weight: 800; /* Bolder font weight */
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+
+/* ====== Responsive tweaks ====== */
+@media (max-width: 768px) {
+  .analysis-container .card {
+    padding: 1rem;
+  }
+
+  .analysis-container .card-title {
+    font-size: 1.5rem;
+  }
+
+  .analysis-container h5 {
+    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .analysis-container ul li {
+    font-size: 0.9rem;
+  }
+
+  .analysis-container .table th,
+  .analysis-container .table td,
+  .analysis-container .analysis-table th,
+  .analysis-container .analysis-table td {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+
+  .analysis-container .table .badge,
+  .analysis-container .analysis-table .badge {
+    font-size: 0.7rem;
+    padding: 3px 5px;
+  }
+  
+  /* Adjust table borders for mobile */
+  .analysis-container .table,
+  .analysis-container .analysis-table {
+    border: 1px solid #1a2530; /* Thinner border on mobile */
+  }
+}

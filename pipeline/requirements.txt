@@ -1,0 +1,8 @@
+opencv-python
+numpy
+insightface
+scikit-learn
+retina-face
+onnxruntime
+flask
+werkzeug

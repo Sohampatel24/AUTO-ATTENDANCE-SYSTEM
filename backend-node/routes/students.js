@@ -6,7 +6,7 @@ const path = require("path");
 const FormData = require("form-data");
 const axios = require("axios");
 const Student = require("../models/Student");
-
+const bcrypt = require("bcrypt");
 const upload = multer({ dest: "uploads/" });
 
 // ---------------- ENROLL ----------------
@@ -16,11 +16,15 @@ router.get("/enroll", (req, res) => {
 
 router.post("/enroll", upload.array("photos", 5), async (req, res) => {
   try {
-    const { name, rollno, email } = req.body;
-    if (!name) return res.status(400).send("Name required");
+    const { name, rollno, email, password } = req.body;
+
+    if (!name || !rollno || !email || !password) {
+      return res.status(400).send("All fields are required");
+    }
 
     // Save student to MongoDB
-    await Student.create({ name, rollno, email });
+    const hashedPassword = await bcrypt.hash(password, 10);  // saltRounds = 10
+    await Student.create({ name, rollno, email, password: hashedPassword });
 
     // Forward photos to Python enroll API
     if (!req.files || req.files.length === 0) {
@@ -29,14 +33,14 @@ router.post("/enroll", upload.array("photos", 5), async (req, res) => {
 
     const form = new FormData();
     form.append("name", name);
-    form.append("rollno", rollno || "");
+    form.append("rollno", rollno);
     for (const f of req.files) {
       form.append("photos", fs.createReadStream(f.path), {
         filename: f.originalname,
       });
     }
 
-    await axios.post("http://localhost:5001/enroll", form, {
+    await axios.post("http://localhost:5000/enroll", form, {
       headers: form.getHeaders(),
       maxContentLength: Infinity,
       maxBodyLength: Infinity,
@@ -78,19 +82,20 @@ router.post("/:id/delete", async (req, res) => {
     // 1. Delete student from DB
     await Student.findByIdAndDelete(req.params.id);
 
-    // 2. Delete embeddings file
+    // 2. Delete embeddings file from pipeline
     const embPath = path.join(
       __dirname,
-      "../../ml-service-python/embeddings",
-      `${student.name}.npy`
+      "../../pipeline/data/output/embeddings/known_db",
+      `${student.name}_${student.rollno}.npy`
     );
+
     if (fs.existsSync(embPath)) fs.unlinkSync(embPath);
 
-    // 3. Delete images folder
+    // 3. Delete temp images folder (if exists)
     const imgFolder = path.join(
       __dirname,
-      "../../ml-service-python/images",
-      student.name
+      "../../pipeline/temp_uploads",
+      `${student.name}_${student.rollno}`
     );
     if (fs.existsSync(imgFolder)) {
       fs.rmSync(imgFolder, { recursive: true, force: true });

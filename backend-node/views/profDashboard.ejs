@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professor Dashboard | Academic Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-bg: #f8f9fa;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --hover-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-bg);
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--primary-color), #1a2530);
+      color: white;
+      padding: 1.5rem 0;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .welcome-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 2rem;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .welcome-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--hover-shadow);
+    }
+
+    .welcome-header {
+      background: linear-gradient(90deg, var(--secondary-color), #2980b9);
+      color: white;
+      padding: 1.5rem;
+    }
+
+    .welcome-body {
+      padding: 1.5rem;
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--hover-shadow);
+    }
+
+    .attendance-table {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .table-header {
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    table td {
+      padding: 1rem;
+      text-align: center;
+      vertical-align: middle;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .present {
+      background-color: #d4edda;
+      color: #155724;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    .absent {
+      background-color: #f8d7da;
+      color: #721c24;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      display: inline-block;
+      min-width: 80px;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .stats-highlight {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--secondary-color);
+    }
+
+    .btn-logout {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    .btn-logout:hover {
+      background-color: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+
+    .lecture-badge {
+      background-color: #e9f7fe;
+      color: var(--secondary-color);
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .attendance-badge {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .badge-high {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .badge-medium {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .badge-low {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .table-success {
+      border-left: 4px solid #28a745;
+    }
+
+    .table-danger {
+      border-left: 4px solid #dc3545;
+    }
+
+    @media (max-width: 992px) {
+      .table-responsive {
+        font-size: 0.9rem;
+      }
+
+      table th, table td {
+        padding: 0.75rem 0.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        padding: 0 1rem;
+      }
+
+      .welcome-header, .welcome-body {
+        padding: 1rem;
+      }
+
+      .table-responsive {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="dashboard-container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 mb-0">Academic Portal</h1>
+          <p class="mb-0 opacity-75">Professor Dashboard</p>
+        </div>
+        <div class="text-end">
+          <p class="mb-0">Today: <span id="current-date"></span></p>
+          <p class="mb-0 opacity-75" id="current-time"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+      <div class="welcome-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h2 class="h4 mb-1">Welcome, Professor <%= professor.name %></h2>
+            <p class="mb-0">Subject: <%= professor.subject %></p>
+          </div>
+          <div class="text-end">
+            <p class="mb-1">Total Students: <span class="badge bg-light text-dark"><%= students.length %></span></p>
+            <p class="mb-0">Lectures Conducted: <span class="badge bg-light text-dark"><%= allLectures.length %></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="welcome-body">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <div class="stats-card text-center">
+              <i class="fas fa-user-check fa-2x text-success mb-2"></i>
+              <h3 class="stats-highlight"><%= students.filter(s => s.attendedLectures / s.totalLectures >= 0.80).length %></h3>
+              <p class="mb-0">Excellent Attendance (>80%)</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="stats-card text-center">
+              <i class="fas fa-user-minus fa-2x text-warning mb-2"></i>
+              <h3 class="stats-highlight"><%= students.filter(s => s.attendedLectures / s.totalLectures < 0.80 && s.attendedLectures / s.totalLectures >= 0.50).length %></h3>
+              <p class="mb-0">Average Attendance (50-80%)</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="stats-card text-center">
+              <i class="fas fa-user-times fa-2x text-danger mb-2"></i>
+              <h3 class="stats-highlight"><%= students.filter(s => s.attendedLectures / s.totalLectures < 0.50).length %></h3>
+              <p class="mb-0">Low Attendance (<50%)</p>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="stats-card text-center">
+              <i class="fas fa-chart-line fa-2x text-primary mb-2"></i>
+              <h3 class="stats-highlight"><%= students.length > 0 ? Math.round(students.reduce((acc, s) => acc + (s.attendedLectures / s.totalLectures), 0) / students.length * 100) : 0 %>%</h3>
+              <p class="mb-0">Overall Attendance Rate</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students with Excellent Attendance (>80%) -->
+    <% 
+      const excellentStudents = students.filter(s => s.attendedLectures / s.totalLectures >= 0.80);
+      const lowStudents = students.filter(s => s.attendedLectures / s.totalLectures < 0.50);
+    %>
+
+    <!-- Excellent Attendance Table -->
+    <div class="attendance-table table-success">
+      <div class="table-header d-flex justify-content-between align-items-center">
+        <h3 class="h5 mb-0"><i class="fas fa-award me-2"></i>Students with Excellent Attendance (>80%)</h3>
+        <span class="badge bg-success text-white"><%= excellentStudents.length %> Students</span>
+      </div>
+
+      <% if (excellentStudents.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Roll No</th>
+                <th>Email</th>
+                <th>Attendance Rate</th>
+                <th>Attended/Total</th>
+                <th>Performance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% excellentStudents.forEach(student => { 
+                const attendanceRate = student.totalLectures > 0 ? (student.attendedLectures / student.totalLectures * 100).toFixed(1) : 0;
+              %>
+                <tr>
+                  <td class="student-name"><%= student.name %></td>
+                  <td><%= student.rollno || '-' %></td>
+                  <td><%= student.email || '-' %></td>
+                  <td>
+                    <span class="attendance-badge badge-high"><%= attendanceRate %>%</span>
+                  </td>
+                  <td><%= student.attendedLectures %>/<%= student.totalLectures %></td>
+                  <td>
+                    <span class="badge bg-success">Excellent</span>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-user-check"></i>
+          <h4>No Students with Excellent Attendance</h4>
+          <p class="mb-0">No students have achieved 80% or higher attendance yet.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Low Attendance Table (<50%) -->
+<div class="attendance-table table-danger">
+  <div class="table-header d-flex justify-content-between align-items-center">
+    <h3 class="h5 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Students with Low Attendance (<50%)</h3>
+    <span class="badge bg-danger text-white"><%= lowStudents.length %> Students</span>
+  </div>
+
+  <% if (lowStudents.length > 0) { %>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Roll No</th>
+            <th>Email</th>
+            <th>Attendance Rate</th>
+            <th>Attended/Total</th>
+            <th>Action Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% lowStudents.forEach(student => { 
+            const attendanceRate = student.totalLectures > 0 ? (student.attendedLectures / student.totalLectures * 100).toFixed(1) : 0;
+          %>
+            <tr id="student-<%= student._id %>">
+              <td class="student-name"><%= student.name %></td>
+              <td><%= student.rollno || '-' %></td>
+              <td><%= student.email || '-' %></td>
+              <td>
+                <span class="attendance-badge badge-low"><%= attendanceRate %>%</span>
+              </td>
+              <td><%= student.attendedLectures %>/<%= student.totalLectures %></td>
+              <td>
+                <button class="btn btn-sm btn-outline-warning send-alert-btn" 
+                        data-student-id="<%= student._id %>" 
+                        data-student-name="<%= student.name %>"
+                        data-student-email="<%= student.email %>">
+                  Send Alert
+                </button>
+                <div id="alert-status-<%= student._id %>" style="display: none;"></div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <i class="fas fa-user-times"></i>
+      <h4>No Students with Low Attendance</h4>
+      <p class="mb-0">Great! All students are maintaining good attendance.</p>
+    </div>
+  <% } %>
+</div>
+
+    <!-- Original Complete Attendance Table -->
+    <div class="attendance-table">
+      <div class="table-header d-flex justify-content-between align-items-center">
+        <h3 class="h5 mb-0">Complete Student Attendance Records</h3>
+        <span class="badge bg-light text-dark"><%= students.length %> Students</span>
+      </div>
+
+      <% if (students.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Roll No</th>
+                <th>Email</th>
+                <% allLectures.forEach(lec => { %>
+                  <th>
+                    <span class="lecture-badge"><%= lec.split("_")[0] %></span>
+                    <small class="d-block">Lec <%= lec.split("_")[1] %></small>
+                  </th>
+                <% }) %>
+                <th>Attendance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(student => { 
+                const attendanceRate = student.totalLectures > 0 ? (student.attendedLectures / student.totalLectures * 100).toFixed(1) : 0;
+                let attendanceClass = '';
+                if (attendanceRate >= 80) attendanceClass = 'text-success';
+                else if (attendanceRate >= 50) attendanceClass = 'text-warning';
+                else attendanceClass = 'text-danger';
+              %>
+                <tr>
+                  <td class="student-name"><%= student.name %></td>
+                  <td><%= student.rollno || '-' %></td>
+                  <td><%= student.email || '-' %></td>
+                  <% allLectures.forEach(lec => { 
+                    const status = attendanceMap[student.name][lec];
+                  %>
+                    <td>
+                      <span class="<%= status === 'Present' ? 'present' : 'absent' %>">
+                        <%= status === 'Present' ? 'Present' : 'Absent' %>
+                      </span>
+                    </td>
+                  <% }) %>
+                  <td>
+                    <div class="d-flex flex-column align-items-center">
+                      <span class="fw-bold <%= attendanceClass %>"><%= attendanceRate %>%</span>
+                      <small class="text-muted"><%= student.attendedLectures %>/<%= student.totalLectures %></small>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <i class="fas fa-user-graduate"></i>
+          <h4>No Students Enrolled</h4>
+          <p class="mb-0">There are currently no students enrolled in this subject.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <a href="#" class="btn btn-outline-primary">
+        <i class="fas fa-download me-2"></i>Export Data
+      </a>
+      <a href="/professors/logout" class="btn btn-danger btn-logout">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+      </a>
+    </div>
+  </div>
+
+  <!-- Alert Modal -->
+<div class="modal fade alert-modal" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLabel">Send Alert to Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="alertForm">
+          <div class="mb-3">
+            <label class="form-label">Student</label>
+            <input type="text" class="form-control" id="studentInfo" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" id="alertMessage" rows="4" placeholder="Type your message here..."></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Priority</label>
+            <select class="form-select" id="alertPriority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="sendAlertBtn">Send Alert</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Update current date and time
+  function updateDateTime() {
+    const now = new Date();
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+    document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+  }
+
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+
+  // Alert functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+    let currentStudent = null;
+
+    // Send alert button click
+    document.querySelectorAll('.send-alert-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        currentStudent = {
+          id: this.dataset.studentId,
+          name: this.dataset.studentName,
+          email: this.dataset.studentEmail
+        };
+        
+        console.log("Preparing alert for student:", currentStudent);
+        
+        document.getElementById('studentInfo').value = `${currentStudent.name} (${currentStudent.email})`;
+        document.getElementById('alertMessage').value = `Dear ${currentStudent.name},\n\nYour attendance is currently below 50%. Please make sure to attend lectures regularly to maintain good academic standing.\n\nBest regards,\nProfessor <%= professor.name %>`;
+        
+        alertModal.show();
+      });
+    });
+
+    // Send alert functionality
+    document.getElementById('sendAlertBtn').addEventListener('click', async function() {
+      const message = document.getElementById('alertMessage').value;
+      const priority = document.getElementById('alertPriority').value;
+      
+      if (!message.trim()) {
+        alert('Please enter a message');
+        return;
+      }
+
+      console.log("Sending alert to student:", currentStudent);
+      console.log("Message:", message);
+      console.log("Priority:", priority);
+
+      // Disable button during sending
+      const sendBtn = document.getElementById('sendAlertBtn');
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Sending...';
+
+      try {
+        // Send alert to server
+        const response = await fetch('/professors/send-alert', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            studentId: currentStudent.id,
+            studentName: currentStudent.name,
+            studentEmail: currentStudent.email,
+            message: message,
+            priority: priority,
+            professorName: '<%= professor.name %>',
+            subject: '<%= professor.subject %>'
+          })
+        });
+
+        console.log("Response status:", response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error response:", errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Response data:", data);
+        
+        if (data.success) {
+          // Update button state
+          const alertBtn = document.querySelector(`[data-student-id="${currentStudent.id}"]`);
+          const statusDiv = document.getElementById(`alert-status-${currentStudent.id}`);
+          
+          if (alertBtn && statusDiv) {
+            alertBtn.innerHTML = '<i class="fas fa-check"></i> Alert Sent';
+            alertBtn.classList.remove('btn-outline-warning');
+            alertBtn.classList.add('btn-success');
+            alertBtn.disabled = true;
+            
+            statusDiv.innerHTML = `
+              <small class="text-success">
+                <i class="fas fa-check-circle me-1"></i>
+                Alert sent successfully
+              </small>
+            `;
+            statusDiv.style.display = 'block';
+          }
+          
+          alertModal.hide();
+          alert('✅ Alert sent successfully!');
+        } else {
+          throw new Error(data.message || 'Failed to send alert');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error sending alert: ' + error.message);
+      } finally {
+        // Re-enable button
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = 'Send Alert';
+      }
+    });
+  });
+</script>
+</body>
+</html>

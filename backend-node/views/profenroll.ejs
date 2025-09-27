@@ -1,0 +1,53 @@
+<h3>Enroll New Professor</h3>
+
+<div class="card">
+  <div class="card-body">
+    <form action="/professors/enroll" method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" name="name" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" name="email" required />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          name="password" 
+          placeholder="Enter a password" 
+          required 
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Subject</label>
+        <select class="form-select" name="subject" required>
+          <option value="">Select Subject</option>
+          <option value="SE">SE</option>
+          <option value="DBMS">DBMS</option>
+          <option value="CNS">CNS</option>
+          <option value="OS">OS</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Upload Face Images (Multiple allowed)</label>
+        <input
+          type="file"
+          class="form-control"
+          name="photos"
+          accept="image/*"
+          multiple
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Enroll Professor</button>
+    </form>
+  </div>
+</div>
