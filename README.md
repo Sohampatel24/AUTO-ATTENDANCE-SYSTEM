@@ -14,9 +14,9 @@
     ```
 5. 1st cmd) Run - python api_server.py
 6. cd backend-node delete the "package-lock.json" and "package.json"
-   2nd cmd run - "npm init -y"
-   2nd cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
-   2nd cmd run - "npm install express-ejs-layouts"
-   2nd cmd run - "npm install bcrypt"
-   2nd cmd run - "npm install express-session"
-   2nd cmd) Run - node server.js
+7. 2nd cmd run - "npm init -y"
+8.  2nd cmd run - "npm install express ejs body-parser mongoose multer axios form-data"
+9.   2nd cmd run - "npm install express-ejs-layouts"
+10.  2nd cmd run - "npm install bcrypt"
+11.  2nd cmd run - "npm install express-session"
+12.   2nd cmd) Run - node server.js
